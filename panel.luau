@@ -46,7 +46,16 @@ local function accountCard(account, mode, now)
     local text, color = badge(account, now)
     if text then header[#header + 1] = ui.label({ text = text, fontSize = 11, color = color }) end
 
-    local rows = { ui.row({ gap = 6, align = "center" }, header) }
+    local headerRow = ui.row({ gap = 6, align = "center" }, header)
+    -- Disabled accounts carry no routing or quota worth reading: one line each.
+    if account.disabled then
+        return ui.column({
+            key = "account-" .. account.id, paddingH = 10, paddingV = 6, radius = 10,
+            fill = "surface_variant/0.45", opacity = 0.55,
+        }, { headerRow })
+    end
+
+    local rows = { headerRow }
     for index, window in ipairs(account.windows) do
         rows[#rows + 1] = windowRow(window, mode, now, account.id .. "-" .. index)
     end
@@ -64,7 +73,7 @@ local function accountCard(account, mode, now)
     end
     return ui.column({
         key = "account-" .. account.id, gap = 4, padding = 10, radius = 10,
-        fill = "surface_variant/0.45", opacity = account.disabled and 0.55 or 1,
+        fill = "surface_variant/0.45",
     }, rows)
 end
 
