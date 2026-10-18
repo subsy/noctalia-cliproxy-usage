@@ -1,0 +1,100 @@
+id = "subsy/cliproxy-usage"
+name = "CLIProxyAPI Usage"
+version = "0.1.0"
+plugin_api = 32
+author = "subsy"
+license = "MIT"
+icon = "gauge"
+description = "Subscription quota pooled across CLIProxyAPI accounts, in the bar."
+tags = ["bar", "panel", "ai", "indicator"]
+
+# ── Plugin-level settings (shared by the poller, every capsule and the panel) ──
+
+[[setting]]
+key = "base_url"
+type = "string"
+label_key = "settings.base_url.label"
+description_key = "settings.base_url.description"
+default = "http://127.0.0.1:8317"
+
+# A file rather than a string setting, so the key stays out of settings.toml.
+[[setting]]
+key = "key_file"
+type = "file"
+label_key = "settings.key_file.label"
+description_key = "settings.key_file.description"
+default = "~/.config/cliproxy-usage/management-key"
+
+[[setting]]
+key = "refresh_seconds"
+type = "int"
+label_key = "settings.refresh_seconds.label"
+description_key = "settings.refresh_seconds.description"
+default = 60
+min = 15
+max = 3600
+
+[[setting]]
+key = "usage_display"
+type = "select"
+label_key = "settings.usage_display.label"
+description_key = "settings.usage_display.description"
+default = "remaining"
+options = [
+  { value = "remaining", label_key = "settings.usage_display.option.remaining" },
+  { value = "used", label_key = "settings.usage_display.option.used" },
+]
+
+[[setting]]
+key = "show_disabled"
+type = "bool"
+label_key = "settings.show_disabled.label"
+description_key = "settings.show_disabled.description"
+default = false
+
+# ── Entries ───────────────────────────────────────────────────────────────────
+
+[[service]]
+id = "poller"
+entry = "service.luau"
+
+[[widget]]
+id = "bar"
+entry = "bar.luau"
+
+[[widget.setting]]
+key = "providers"
+type = "string_list"
+label_key = "settings.providers.label"
+description_key = "settings.providers.description"
+default = []
+
+[[widget.setting]]
+key = "show_value"
+type = "bool"
+label_key = "settings.show_value.label"
+default = true
+
+[[widget.setting]]
+key = "show_gauge"
+type = "bool"
+label_key = "settings.show_gauge.label"
+description_key = "settings.show_gauge.description"
+default = true
+
+[[widget.setting]]
+key = "show_countdown"
+type = "bool"
+label_key = "settings.show_countdown.label"
+default = false
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 460
+height = 520
+placement = "attached"
+position = "auto"
+open_near_click = true
+dismiss_on_outside_click = true
+capture_keys = ["r"]
